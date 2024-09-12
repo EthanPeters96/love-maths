@@ -3,17 +3,13 @@
 
 document.addEventListener("DOMContentLoaded", function () {
     let buttons = document.getElementsByTagName("button");
-    // get all the buttons in the HTML and store them in the variable buttons
+
     for (let button of buttons) {
-        // loop through all the buttons and add an event listener to them
         button.addEventListener("click", function () {
-            // add an event listener to the button that listens for a click
             if (this.getAttribute("data-type") === "submit") {
-                // if the button clicked has a data-type of submit, alert "You clicked Submit!"
-                alert("You clicked Submit!"); // alert "You clicked Submit!" when the button is clicked
+                checkAnswer();
             } else {
-                // if the button clicked does not have a data-type of submit, alert "You clicked [gameType]"
-                let gameType = this.getAttribute("data-type"); // get the data-type of the button clicked and store it in the variable gameType
+                let gameType = this.getAttribute("data-type");
                 runGame(gameType);
             }
         });
@@ -27,27 +23,52 @@ document.addEventListener("DOMContentLoaded", function () {
  * and after the user's answer has been processed
  */
 function runGame(gameType) {
-    // Creates two random numbers between 1 and 25 and stores them in variables
+    // Creates two random numbers between 1 and 25
     let num1 = Math.floor(Math.random() * 25) + 1;
     let num2 = Math.floor(Math.random() * 25) + 1;
 
     if (gameType === "addition") {
         displayAdditionQuestion(num1, num2);
-    } else if (gameType === "multiply") {
-        displayMultiplyQuestion(num1, num2);
-    } else if (gameType === "subtract") {
-        displaySubtractQuestion(num1, num2);
-    } else if (gameType === "divide") {
-        displayDivideQuestion(num1, num2);
     } else {
         alert(`Unknown game type: ${gameType}`);
         throw `Unknown game type: ${gameType}. Aborting!`;
     }
 }
 
-function checkAnswer() {}
+/**
+ * Checks the answer agaist the first element in
+ * the returned calculateCorrectAnswer array
+ */
+function checkAnswer() {
+    let userAnswer = parseInt(document.getElementById("answer-box").value);
+    let calculatedAnswer = calculateCorrectAnswer();
+    let isCorrect = userAnswer === calculatedAnswer[0];
 
-function calculateCorrectAnswer() {}
+    if (isCorrect) {
+        alert("Hey! You got it right! :D");
+    } else {
+        alert(`Awwww.... you answered ${userAnswer}. The correct answer was ${calculatedAnswer[0]}!`);
+    }
+
+    runGame(calculatedAnswer[1]);
+}
+
+/**
+ * Gets the operands (the numbers) and the operator (plus, minus etc)
+ * directly from the dom, and returns the correct answer.
+ */
+function calculateCorrectAnswer() {
+    let operand1 = parseInt(document.getElementById("operand1").innerText);
+    let operand2 = parseInt(document.getElementById("operand2").innerText);
+    let operator = document.getElementById("operator").innerText;
+
+    if (operator === "+") {
+        return [operand1 + operand2, "addition"];
+    } else {
+        alert(`Unimplemented operator ${operator}`);
+        throw `Unimplemented operator ${operator}. Aborting!`;
+    }
+}
 
 function incrementScore() {}
 
